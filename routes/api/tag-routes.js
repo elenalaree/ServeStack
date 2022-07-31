@@ -1,22 +1,27 @@
-const router = require('express').Router();
-const { Tag, Product, ProductTag } = require('../../models');
+const router = require("express").Router();
+const { Tag, Product, ProductTag } = require("../../models");
 
 // The `/api/tags` endpoint
 
-router.get('/', (req, res) => {
-  Tag.findAll({
-    
-  })
+router.get("/", (req, res) => {
+	Tag.findAll({
+		include: [
+			{
+				model: Product,
+				attributes: ["id", "product_name", "price", "stock", "category_id"],
+			},
+		],
+	})
 		.then((dbTagData) => res.json(dbTagData))
 		.catch((err) => {
 			console.log(err);
 			res.status(500).json(err);
 		});
-  // be sure to include its associated Product data
+	// be sure to include its associated Product data
 });
 
-router.get('/:id', (req, res) => {
-  Tag.findOne({
+router.get("/:id", (req, res) => {
+	Tag.findOne({
 		where: {
 			id: req.params.id,
 		},
@@ -38,25 +43,25 @@ router.get('/:id', (req, res) => {
 			console.log(err);
 			res.status(500).json(err);
 		});
-  // be sure to include its associated tag data
+	// be sure to include its associated tag data
 });
 
-router.post('/', (req, res) => {
-  Tag.create({
-		Tag_name: req.body.Tag_name,
+router.post("/", (req, res) => {
+	Tag.create({
+		tag_name: req.body.tag_name,
 	})
 		.then((dbTagData) => res.json(dbTagData))
 		.catch((err) => {
 			console.log(err);
 			res.status(500).json(err);
 		});
-  // create a new tag
+	// create a new tag
 });
 
-router.put('/:id', (req, res) => {
-  Tag.update(
+router.put("/:id", (req, res) => {
+	Tag.update(
 		{
-			Tag_name: req.body.Tag_name,
+			tag_name: req.body.tag_name,
 		},
 		{
 			where: {
@@ -75,11 +80,11 @@ router.put('/:id', (req, res) => {
 			console.log(err);
 			res.status(500).json(err);
 		});
-  // update a tag's name by its `id` value
+	// update a tag's name by its `id` value
 });
 
-router.delete('/:id', (req, res) => {
-  Tag.destroy({
+router.delete("/:id", (req, res) => {
+	Tag.destroy({
 		where: {
 			id: req.params.id,
 		},
@@ -95,7 +100,7 @@ router.delete('/:id', (req, res) => {
 			console.log(err);
 			res.status(500).json(err);
 		});
-  // delete on tag by its `id` value
+	// delete on tag by its `id` value
 });
 
 module.exports = router;
